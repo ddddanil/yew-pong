@@ -1,0 +1,21 @@
+[package]
+name = "wasm-pong"
+version = "0.1.0"
+authors = ["Danil Doroshin <ddddanil5555@gmail.com>"]
+edition = "2018"
+
+[[bin]]
+name = "pong"
+path = "src/main.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+stdweb = "0.4"
+
+[dependencies.yew]
+git = "https://github.com/DenisKolodin/yew"
+
+[lib]
+name = "pong"
+path = "src/lib.rs"
