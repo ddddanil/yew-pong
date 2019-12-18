@@ -1,3 +1,36 @@
 html {
-    font-size: large;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: black;
+    height: 100%;
+}
+
+body {
+    height: 480px;
+    width: 640px;
+    margin: 0 auto;
+}
+
+.game {
+    margin: 30px;
+    padding: 30px;
+    border: 5px solid white;
+    height: 100%;
+    background-color: black;
+}
+
+.paddle {
+    position: relative;
+    width: 10px;
+    height: 50px;
+    background-color: white;
+}
+  
+//   .paddle-left {
+//     top: 150px;
+//   }
+  
+.paddle-right {
+    left: 500px;
 }

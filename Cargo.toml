@@ -11,10 +11,8 @@ path = "src/main.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-stdweb = "0.4"
-
-[dependencies.yew]
-git = "https://github.com/DenisKolodin/yew"
+stdweb = "0.4.20"
+yew = { git = "https://github.com/yewstack/yew", features = ["toml", "yaml", "msgpack", "cbor"] }
 
 [lib]
 name = "pong"
