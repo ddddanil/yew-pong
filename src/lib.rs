@@ -353,7 +353,7 @@ impl Model {
   }
 
   fn px_to_bally(px: i32) -> i32 {
-    px + 10
+    px
   }
 
   fn height_to_px(pos: f32) -> i32 {
