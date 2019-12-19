@@ -87,7 +87,7 @@ impl Component for Model {
       Msg::Tick => {
         self.tick();
         let c = self.link.callback(|_| Msg::Tick);
-        self.timet = self.timeout.spawn(Duration::from_millis(200), c);
+        self.timet = self.timeout.spawn(Duration::from_millis(20), c);
         true
       }
     }
@@ -97,9 +97,9 @@ impl Component for Model {
     let move_down = self.link.callback(|_: ()| Msg::MoveDown(0.05));
     html! {
       <div class="game">
-        <div class="paddle paddle-left"  style={ format!("top: {}px;", Model::height_to_px(self.posl)) } />
+        <div class="paddle paddle-left"  style={ format!("top: {}px;", Model::px_to_paddley(Model::height_to_px(self.posl))) } />
         <div class="paddle paddle-right" style={ format!("top: {}px;", Model::height_to_px(self.posr)) } />
-        <div class="ball"                style={ format!("top: {}px; left: {}px;", Model::height_to_px(self.ballx) - 100, Model::width_to_px(self.bally)) } />
+        <div class="ball"                style={ format!("top: {}px; left: {}px;", Model::px_to_bally(Model::height_to_px(self.bally)), Model::px_to_ballx(Model::width_to_px(self.ballx))) } />
       </div>
     }
   }
@@ -121,17 +121,29 @@ impl Model {
   }
 
   fn tick(&mut self) {
-    self.ballx += 0.05 * self.ballvx;
+    self.ballx += 0.005 * self.ballvx;
     if self.ballx > 1.0 {
       self.ballx = 1.0;
+      if let Some(k) = self.intersect_paddle(self.bally, self.posr) {
+        self.ballvy = k * self.ballvy.signum();
+      } else {
+        self.scorel += 1;
+        self.console.info(&*format!("New score {}:{}", self.scorel, self.scorer))
+      }
       self.ballvx *= -1.0;
     }
     if self.ballx < 0.0 {
       self.ballx = 0.0;
+      if let Some(k) = self.intersect_paddle(self.bally, self.posl) {
+        self.ballvy = k * self.ballvy.signum();
+      } else {
+        self.scorer += 1;
+        self.console.info(&*format!("New score {}:{}", self.scorel, self.scorer))
+      }
       self.ballvx *= -1.0;
     }
 
-    self.bally += 0.05 * self.ballvy;
+    self.bally += 0.005 * self.ballvy;
     if self.bally > 1.0 {
       self.bally = 1.0;
       self.ballvy *= -1.0;
@@ -142,12 +154,39 @@ impl Model {
     }
   }
 
-  fn height_to_px(pos: f32) -> i16 {
-    (430.0 * pos) as i16
+  fn px_to_paddley(px: i32) -> i32 {
+    (px * 430) / 480
   }
 
-  fn width_to_px(pos: f32) -> i16 {
-    (580.0 * pos) as i16
+  fn px_to_ballx(px: i32) -> i32 {
+    (px * 570) / 590 + 10
+  }
+
+  fn px_to_bally(px: i32) -> i32 {
+    px - 100
+  }
+
+  fn height_to_px(pos: f32) -> i32 {
+    (480.0 * pos) as i32
+  }
+
+  fn width_to_px(pos: f32) -> i32 {
+    (590.0 * pos) as i32
+  }
+
+  fn intersect_paddle(&mut self, b: f32, p: f32) -> Option<f32> {
+    let u = 0.1 * p;
+    let d = 0.1 - u;
+    let up = p - u;
+    let dp = p + d;
+    let m = (up + dp) * 0.5;
+    self.console.debug(&*format!("Intersect from {} to {} with {}", up, dp, b));
+    if b >= up && b <= dp {
+      let k = (m - b).abs() * 35.0;
+      self.console.debug(&*format!("Intersected at {} from the middle {}", k, m));
+      Some(k)
+    }
+    else { None }
   }
 
   fn move_up(&mut self, amount: f32) {
