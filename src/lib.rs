@@ -1,3 +1,4 @@
+#![recursion_limit="256"]
 extern crate stdweb;
 extern crate yew;
 
@@ -69,11 +70,11 @@ impl Component for Model {
   fn update(&mut self, msg: Self::Message) -> ShouldRender {
     match msg {
       Msg::MoveDown(amount) => {
-        self.move_down(amount);
+        self.movel_down(amount);
         true
       }
       Msg::MoveUp(amount) => {
-        self.move_up(amount);
+        self.movel_up(amount);
         true
       }
       Msg::KeyDown(e) => {
@@ -186,10 +187,98 @@ impl Component for Model {
         }}
       }
     };
+    let draw_digit_right = |d: u8| {
+      match d {
+        0 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 135px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 45px;" />
+          </>
+        }}
+        1 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 45px;   left: 125px; top: 5px;" />
+          </>
+        }}
+        2 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 135px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 27.5px; left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 45px;" />
+          </>
+        }}
+        3 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 135px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 45px;" />
+          </>
+        }}
+        4 => { html! {
+          <>
+            <div class="digit" style="width: 5px ; height: 47.5px; left: 135px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 110px; top: 2.5px;" />
+          </>
+        }}
+        5 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 27.5px; left: 135px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 45px;" />
+          </>
+        }}
+        6 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 27.5px; left: 135px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 45px;" />
+          </>
+        }}
+        7 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 135px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+          </>
+        }}
+        8 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 135px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 45px;" />
+          </>
+        }}
+        9 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 135px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 110px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 110px; top: 2.5px;" />
+          </>
+        }}
+
+        _ => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 112.5px;   top: 22.5px;" />
+          </>
+        }}
+      }
+    };
 
     html! {
       <div class="game">
-        <div class="score" > { draw_digit_left(self.scorel) } { draw_colon() } </div>
+        <div class="score" > { draw_digit_left(self.scorel) } { draw_colon() } { draw_digit_right(self.scorer) } </div>
         <div class="paddle paddle-left"  style={ format!("top: {}px;", Model::px_to_paddley(Model::height_to_px(self.posl))) } />
         <div class="paddle paddle-right" style={ format!("top: {}px;", Model::height_to_px(self.posr)) } />
         <div class="ball"                style={ format!("top: {}px; left: {}px;", Model::px_to_bally(Model::height_to_px(self.bally)), Model::px_to_ballx(Model::width_to_px(self.ballx))) } />
@@ -202,11 +291,11 @@ impl Model {
   fn key_event(&mut self, code: String) -> ShouldRender {
     match code.as_ref() {
       "ArrowUp" => {
-        self.move_up(0.05);
+        self.movel_up(0.05);
         true
       }
       "ArrowDown" => {
-        self.move_down(0.05);
+        self.movel_down(0.05);
         true
       }
       _ => false
@@ -245,6 +334,14 @@ impl Model {
       self.bally = 0.0;
       self.ballvy *= -1.0;
     }
+
+    if (self.bally - self.posr).abs() > 0.1 {
+      if self.bally < self.posr {
+        self.mover_up(0.05);
+      } else {
+        self.mover_down(0.05);
+      }
+    }
   }
 
   fn px_to_paddley(px: i32) -> i32 {
@@ -282,17 +379,31 @@ impl Model {
     else { None }
   }
 
-  fn move_up(&mut self, amount: f32) {
+  fn movel_up(&mut self, amount: f32) {
     self.posl -= amount;
     if self.posl < 0.0 {
       self.posl = 0.0;
     }
   }
 
-  fn move_down(&mut self, amount: f32) {
+  fn mover_up(&mut self, amount: f32) {
+    self.posr -= amount;
+    if self.posr < 0.0 {
+      self.posr = 0.0;
+    }
+  }
+
+  fn movel_down(&mut self, amount: f32) {
     self.posl += amount;
     if self.posl > 1.0 {
       self.posl = 1.0;
+    }
+  }
+
+  fn mover_down(&mut self, amount: f32) {
+    self.posr += amount;
+    if self.posr > 1.0 {
+      self.posr = 1.0;
     }
   }
 }
