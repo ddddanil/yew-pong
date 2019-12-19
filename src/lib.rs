@@ -4,7 +4,6 @@ extern crate yew;
 use core::time::Duration;
 use yew::{
   prelude::*,
-  html::EmptyBuilder,
   services::{
     ConsoleService,
     // KeyboardService,
@@ -14,10 +13,7 @@ use yew::{
     }
   }
 };
-use stdweb::{
-  Reference,
-  web::{ window, IEventTarget, event::IKeyboardEvent }
-};
+use stdweb::web::{ window, IEventTarget, event::IKeyboardEvent };
 
 pub struct Model {
   console: ConsoleService,
@@ -94,9 +90,106 @@ impl Component for Model {
   }
 
   fn view(&self) -> Html {
-    let move_down = self.link.callback(|_: ()| Msg::MoveDown(0.05));
+    let draw_colon = || {
+      html! {
+        <>
+          <div class="digit" style="width: 5px;    height: 5px; left: 67.5px; top: 15px;" />
+          <div class="digit" style="width: 5px;    height: 5px; left: 67.5px; top: 32.5px;" />
+        </>
+      }
+    };
+    let draw_digit_left = |d: u8| {
+      match d {
+        0 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 52.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 45px;" />
+          </>
+        }}
+        1 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 45px;   left: 42.5px; top: 5px;" />
+          </>
+        }}
+        2 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 52.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 27.5px; left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 45px;" />
+          </>
+        }}
+        3 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 52.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 45px;" />
+          </>
+        }}
+        4 => { html! {
+          <>
+            <div class="digit" style="width: 5px ; height: 47.5px; left: 52.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 27.5px; top: 2.5px;" />
+          </>
+        }}
+        5 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 27.5px; left: 52.5px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 45px;" />
+          </>
+        }}
+        6 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 27.5px; left: 52.5px; top: 22.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 45px;" />
+          </>
+        }}
+        7 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 52.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+          </>
+        }}
+        8 => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 52.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 45px;" />
+          </>
+        }}
+        9 => { html! {
+          <>
+            <div class="digit" style="width: 5px;  height: 47.5px; left: 52.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 2.5px;" />
+            <div class="digit" style="width: 30px; height: 5px;    left: 27.5px; top: 22.5px;" />
+            <div class="digit" style="width: 5px;  height: 25px;   left: 27.5px; top: 2.5px;" />
+          </>
+        }}
+
+        _ => { html! {
+          <>
+            <div class="digit" style="width: 30px; height: 5px;    left: 30px;   top: 22.5px;" />
+          </>
+        }}
+      }
+    };
+
     html! {
       <div class="game">
+        <div class="score" > { draw_digit_left(self.scorel) } { draw_colon() } </div>
         <div class="paddle paddle-left"  style={ format!("top: {}px;", Model::px_to_paddley(Model::height_to_px(self.posl))) } />
         <div class="paddle paddle-right" style={ format!("top: {}px;", Model::height_to_px(self.posr)) } />
         <div class="ball"                style={ format!("top: {}px; left: {}px;", Model::px_to_bally(Model::height_to_px(self.bally)), Model::px_to_ballx(Model::width_to_px(self.ballx))) } />
@@ -155,15 +248,15 @@ impl Model {
   }
 
   fn px_to_paddley(px: i32) -> i32 {
-    (px * 430) / 480
+    (px * 430) / 480 
   }
 
   fn px_to_ballx(px: i32) -> i32 {
-    (px * 570) / 590 + 10
+    (px * 562) / 590 + 20
   }
 
   fn px_to_bally(px: i32) -> i32 {
-    px - 100
+    px + 10
   }
 
   fn height_to_px(pos: f32) -> i32 {
@@ -171,7 +264,7 @@ impl Model {
   }
 
   fn width_to_px(pos: f32) -> i32 {
-    (590.0 * pos) as i32
+    (640.0 * pos) as i32
   }
 
   fn intersect_paddle(&mut self, b: f32, p: f32) -> Option<f32> {
@@ -182,7 +275,7 @@ impl Model {
     let m = (up + dp) * 0.5;
     self.console.debug(&*format!("Intersect from {} to {} with {}", up, dp, b));
     if b >= up && b <= dp {
-      let k = (m - b).abs() * 35.0;
+      let k = (m - b).abs() * 40.0;
       self.console.debug(&*format!("Intersected at {} from the middle {}", k, m));
       Some(k)
     }

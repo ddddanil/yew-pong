@@ -13,15 +13,17 @@ body {
 }
 
 .game {
+    position: relative;
     margin: 10px;
     padding: 10px;
     border: 5px solid white;
     height: 100%;
+    width: 100%;
     background-color: black;
 }
 
 .paddle {
-    position: relative;
+    position: absolute;
     width: 10px;
     height: 50px;
     background-color: white;
@@ -32,12 +34,25 @@ body {
 //   }
   
 .paddle-right {
-    left: 580px;
+    right: 10px;
 }
 
 .ball {
-    position: relative;
+    position: absolute;
     width: 8px;
     height: 8px;
+    background-color: white;
+}
+
+.score {
+    position: relative;
+    margin: 0 auto;
+    z-index: 10;
+    width: 140px;
+    height: 50px;
+}
+
+.digit {
+    position: absolute;
     background-color: white;
 }
